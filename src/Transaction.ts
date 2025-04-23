@@ -86,10 +86,10 @@ export class Transaction {
    */
   getHash(): string {
     const bytes = new TextEncoder().encode(this.serialize());
-    const hashBytes = sha3_256(bytes);
-    // convert Uint8Array to hex string
+    const hashBytes = sha3_256(bytes) as Uint8Array;
+    
     return Array.from(hashBytes)
-      .map(b => b.toString(16).padStart(2, '0'))
+      .map((b: number) => b.toString(16).padStart(2, '0'))
       .join('');
   }
 }
