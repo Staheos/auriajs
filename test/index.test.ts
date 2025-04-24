@@ -18,7 +18,7 @@ describe('Transaction ↔ Signing ↔ Verification flow', () => {
             wallet.GetAddress()
         );
 
-    const signed: SignedTransaction = new SignedTransaction(tx, wallet);
+    const signed = new SignedTransaction(tx, wallet);
     expect(signed).toBeInstanceOf(SignedTransaction);
     // expect(typeof signed).toBe('string');
 
