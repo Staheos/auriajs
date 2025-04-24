@@ -8,7 +8,7 @@ export async function SubmitTransaction(tr: SignedTransaction): Promise<string> 
   const response = await fetch('http://127.0.0.1:25561/st', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: tr.serialize(),
+    body: tr.Serialize(),
   });
   return await response.text();
 }

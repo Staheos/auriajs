@@ -15,24 +15,24 @@ export class SignedTransaction extends Transaction {
    * @desc
    *  Create a signed transaction using the provided wallet.
    */
-  constructor(transaction: Transaction, wallet: Wallet) {
+  public constructor(transaction: Transaction, wallet: Wallet) {
     super(transaction.amount, transaction.fees, transaction.recipient, transaction.sender);
     // Sign the hash of the base transaction
-    const txHash = this.getHash();
-    this._signature = Signature.sign(new TextEncoder().encode(txHash), wallet.getPrivateKey());
-    this._publicKey = wallet.getPublicKey();
+    const txHash = this.GetHash();
+    this._signature = Signature.Sign(new TextEncoder().encode(txHash), wallet.GetPrivateKey());
+    this._publicKey = wallet.GetPublicKey();
   }
 
   /**
    * @desc
    *  Serialize the signed transaction to a plain object including signature and pubkey.
    */
-  override toDict(): SignedTransactionDict {
+  public override ToDict(): SignedTransactionDict {
     return {
-      transaction: super.toDict(),
-      hash: this.getHash(),
+      transaction: super.ToDict(),
+      hash: this.GetHash(),
       pubkey: Buffer.from(this._publicKey).toString('hex'),
-      signature: this._signature.serialize(),
+      signature: this._signature.Serialize(),
     };
   }
 
@@ -40,7 +40,7 @@ export class SignedTransaction extends Transaction {
    * @desc
    *  Serialize the signed transaction to a JSON string.
    */
-  override serialize(): string {
-    return JSON.stringify(this.toDict());
+  public override Serialize(): string {
+    return JSON.stringify(this.ToDict());
   }
 }

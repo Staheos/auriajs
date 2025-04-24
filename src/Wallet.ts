@@ -12,7 +12,7 @@ export class Wallet {
    * @desc
    * Create a wallet from raw private key bytes. 
    */
-  static fromPrivateKeyBytes(privateKeyBytes: Uint8Array): Wallet {
+  public static FromPrivateKeyBytes(privateKeyBytes: Uint8Array): Wallet {
     return new Wallet(privateKeyBytes);
   }
 
@@ -20,7 +20,7 @@ export class Wallet {
    * @desc 
    * Create a wallet from a private key in hex string format. 
    */
-  static fromPrivateKeyHex(privateKeyHex: string): Wallet {
+  public static FromPrivateKeyHex(privateKeyHex: string): Wallet {
     const privateKey = Uint8Array.from(Buffer.from(privateKeyHex, 'hex'));
     return new Wallet(privateKey);
   }
@@ -29,7 +29,7 @@ export class Wallet {
    * @desc
    *  Generate a new ED448 private key. 
    */
-  static generate(): Wallet {
+  public static Generate(): Wallet {
     const privKey = ed448.utils.randomPrivateKey();
     return new Wallet(privKey);
   }
@@ -38,7 +38,7 @@ export class Wallet {
    * @desc
    *  Get the raw private key bytes. 
    */
-  getPrivateKey(): Uint8Array {
+  public GetPrivateKey(): Uint8Array {
     return this.privateKey;
   }
 
@@ -46,7 +46,7 @@ export class Wallet {
    * @desc
    *  Get the public key bytes for this wallet. 
    */
-  getPublicKey(): Uint8Array {
+  public GetPublicKey(): Uint8Array {
     return ed448.getPublicKey(this.privateKey);
   }
 
@@ -54,8 +54,8 @@ export class Wallet {
    * @desc
    *  Compute the address (SHA3‑256 hash of the public key) in hex. 
    */
-  getAddress(): string {
-    const pub = this.getPublicKey();
+  public GetAddress(): string {
+    const pub = this.GetPublicKey();
     const hashBytes = sha3_256(pub);
     return Buffer.from(hashBytes).toString('hex');
   }
