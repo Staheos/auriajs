@@ -1,7 +1,6 @@
 import { Wallet } from './Wallet.js';
 import { Transaction } from './Transaction.js';
 import { Signature } from './Signature.js';
-import { TransactionDict } from './TransactionDict.js';
 import { SignedTransactionDict } from './SignedTransactionDict.js';
 
 /**
