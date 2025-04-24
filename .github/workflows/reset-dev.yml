@@ -100,6 +100,7 @@ jobs:
           echo "stable=$stable" >> $GITHUB_OUTPUT
 
       - name: Update package.json
+        continue-on-error: true
         run: |
           npm pkg set version=${{ steps.semver.outputs.stable }}
           npm pkg delete publishConfig.tag
@@ -124,7 +125,7 @@ jobs:
     steps:
       - name: Find open PRs to dev
         id: find_prs
-        uses: peter-evans/find-pull-requests@v3
+        uses: juliangruber/find-pull-request-action@v1.9.0
         with:
           base: dev
       
