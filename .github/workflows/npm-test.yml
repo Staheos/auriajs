@@ -1,19 +1,14 @@
-name: Release & Commit Version
+name: Pre-release to test package
 
 on:
   push:
-    # triggers on tag pushes like "v1.2.3" and also on pushes to action_tests
-    tags:
-      - 'v*.*.*'
     branches:
+      - dev
       - action_tests
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
-permissions:
-  contents: write   # so the publish job can push back if needed
 
 jobs:
 
@@ -28,55 +23,6 @@ jobs:
       - id: get
         run: |
           echo "ts=$(date -u +'%Y%m%d-%H%M%S')" >> "$GITHUB_OUTPUT"
-
-
-  # ╔══════════════════════════════════════════════════════════╗
-  # ║                        Linting                           ║
-  # ╚══════════════════════════════════════════════════════════╝
-  lint:
-    runs-on: ubuntu-latest
-    needs: [Timestamp]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Restore npm cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            **/node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
-      
-      - uses: actions/setup-node@v4
-        with: { node-version: '18' }
-      - run: npm i
-      - run: npm run lint       # e.g. ESLint
-      - run: npm run typecheck  # e.g. tsc --noEmit
-
-
-  test:
-    runs-on: ubuntu-latest
-    needs: [lint]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Restore npm cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            **/node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
-      
-      - uses: actions/setup-node@v4
-        with: { node-version: '18' }
-      - run: npm i
-      - run: npm run test
-      - run: npm run coverage
 
 
   # ╔══════════════════════════════════════════════════════════╗
@@ -95,6 +41,7 @@ jobs:
           path: |
             ~/.npm
             **/node_modules
+            package-lock.json
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-
@@ -113,8 +60,8 @@ jobs:
       - name: Upload audit report
         uses: actions/upload-artifact@v4
         with:
-          name: npm-audit-report
-          path: Auria-audit-${{ needs.Timestamp.outputs.ts }}.json
+          name: Auria-audit-${{ needs.Timestamp.outputs.ts }}.json
+          path: audit-report.json
           retention-days: 10
 
 
@@ -126,21 +73,104 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            **/node_modules
+            package-lock.json
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
       - uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      - name: 🔍 Run npm audit via Action
-        uses: crazy-max/npm-audit-action@v2
+      - run: npm i
+
+      - name: Run npm audit via Action
+        uses: oke-py/npm-audit-action@v2
         with:
           severity: moderate      # low, moderate, high, critical
           registry-url: 'https://registry.npmjs.org'
+
+
+  # ╔══════════════════════════════════════════════════════════╗
+  # ║                        Linting                           ║
+  # ╚══════════════════════════════════════════════════════════╝
+  lint:
+    runs-on: ubuntu-latest
+    needs: [Timestamp]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            **/node_modules
+            package-lock.json
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      
+      - uses: actions/setup-node@v4
+        with: { node-version: '18' }
+      - run: npm i
+      - run: npm run lint       # e.g. ESLint
+      - run: npm run typecheck  # e.g. tsc --noEmit
+
+
+  # ╔══════════════════════════════════════════════════════════╗
+  # ║                        Testing                           ║
+  # ╚══════════════════════════════════════════════════════════╝
+  test:
+    runs-on: ubuntu-latest
+    needs: [lint]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            **/node_modules
+            package-lock.json
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with: 
+          node-version: '18'
+
+      - run: npm i
+      - run: npm run test
+
+      - name: Coverage report
+        run: npm run coverage   # make sure this outputs an lcov report at coverage/lcov.info
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage/lcov.info
+          flags: unittests
+          fail_ci_if_error: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
 
   # ╔══════════════════════════════════════════════════════════╗
   # ║                    Build the package                     ║
   # ╚══════════════════════════════════════════════════════════╝
   build:
-    needs: [Timestamp]
+    needs: [Timestamp, audit, depscan]
     runs-on: ubuntu-latest
 
     steps:
@@ -153,6 +183,7 @@ jobs:
           path: |
             ~/.npm
             **/node_modules
+            package-lock.json
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-
@@ -178,9 +209,12 @@ jobs:
   # ╔══════════════════════════════════════════════════════════╗
   # ║                     Publish to npm                       ║
   # ╚══════════════════════════════════════════════════════════╝
-  publish:
-    needs: [Timestamp, build]
+  Publish:
+    needs: [Timestamp, build, test]
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write 
 
     steps:
       - name: Checkout code (for package.json, etc.)
@@ -200,6 +234,7 @@ jobs:
           path: |
             ~/.npm
             **/node_modules
+            package-lock.json
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-
@@ -209,6 +244,23 @@ jobs:
         with:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Change to test package in package.json
+        run: |
+          npm pkg set name="@auria-system/auria-test"
+
+      - name: Bump version
+        run: |
+          npm version prerelease --no-git-tag-version
+
+          NEW_VER=$(node -p "require('./package.json').version")
+          echo "Stepped up to $NEW_VER"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "chore: Bump version to $NEW_VER"
+          git push
 
       - name: Install dependencies
         run: npm install
