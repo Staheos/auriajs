@@ -1,0 +1,104 @@
+name: Recreate dev branch from master
+
+on:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  pull-requests: read
+  contents: write
+  issues: write
+
+jobs:
+
+  # ╔══════════════════════════════════════════════════════════╗
+  # ║                       Get Timestamp                      ║
+  # ╚══════════════════════════════════════════════════════════╝
+  Timestamp:
+    runs-on: ubuntu-latest
+    outputs:
+      ts: ${{ steps.get.outputs.ts }}
+    steps:
+      - id: get
+        run: |
+          echo "ts=$(date -u +'%Y%m%d-%H%M%S')" >> "$GITHUB_OUTPUT"
+  
+
+  # ╔══════════════════════════════════════════════════════════╗
+  # ║                     Save current dev                     ║
+  # ╚══════════════════════════════════════════════════════════╝
+  prepare:
+    needs: [Timestamp]
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - name: Check out master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Create reset tag
+        id: tag
+        run: |
+          TAG="dev-reset-${{ needs.Timestamp.outputs.ts }}"
+          git tag $TAG
+          git push origin $TAG
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+
+  # ╔══════════════════════════════════════════════════════════╗
+  # ║                   Recreate dev branch                    ║
+  # ╚══════════════════════════════════════════════════════════╝
+  reset-dev:
+    needs: [prepare]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          persist-credentials: true
+          fetch-depth: 0 
+
+      - name: Force push master to dev
+        run: |
+          git fetch origin dev || git checkout -b dev
+          git push origin master:dev --force
+
+
+  # ╔══════════════════════════════════════════════════════════╗
+  # ║                       Notify team                        ║
+  # ╚══════════════════════════════════════════════════════════╝
+  notify:
+    needs: [prepare, reset-dev]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find open PRs to dev
+        id: find_prs
+        uses: peter-evans/find-pull-requests@v3
+        with:
+          base: dev
+      
+      - name: Warn Pull Requests authors
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const tag = '${{ needs.prepare.outputs.tag }}';
+            const prs = JSON.parse('${{ steps.find_prs.outputs.pull_requests }}');
+            for (const pr of prs) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: `Heads up! \`dev\` was reset to **${tag}** - please rebase your branch.`
+              });
+            }
