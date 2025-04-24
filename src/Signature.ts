@@ -12,7 +12,7 @@ export class Signature {
    * @desc
    *  Sign bytes using given private key.
    */
-  static sign(data: Uint8Array, privateKey: Uint8Array): Signature {
+  public static Sign(data: Uint8Array, privateKey: Uint8Array): Signature {
     const sig = ed448.sign(data, privateKey);
     return new Signature(sig);
   }
@@ -21,7 +21,7 @@ export class Signature {
    * @desc
    *  Deserialize a hex string to a Signature object.
    */
-  static deserialize(signatureHex: string): Signature {
+  public static Deserialize(signatureHex: string): Signature {
     const sigBytes = Uint8Array.from(Buffer.from(signatureHex, 'hex'));
     return new Signature(sigBytes);
   }
@@ -30,7 +30,7 @@ export class Signature {
    * @desc
    *  Verify signature against data and public key.
    */
-  verify(data: Uint8Array, publicKey: Uint8Array): boolean {
+  public Verify(data: Uint8Array, publicKey: Uint8Array): boolean {
     return ed448.verify(this.signature, data, publicKey);
   }
 
@@ -38,7 +38,7 @@ export class Signature {
    * @desc
    *  Serialize the signature to a hex string.
    */
-  serialize(): string {
+  public Serialize(): string {
     return Buffer.from(this.signature).toString('hex');
   }
 
@@ -46,7 +46,7 @@ export class Signature {
    * @desc
    *  String representation of the signature.
    */
-  toString(): string {
-    return this.serialize();
+  public ToString(): string {
+    return this.Serialize();
   }
 }

@@ -17,7 +17,7 @@ export class Transaction {
    * @desc
    *  Initialize a new Transaction.
    */
-  constructor(amount: number, fees: number, recipient: string, sender: string) {
+  public constructor(amount: number, fees: number, recipient: string, sender: string) {
     this.amount = amount;
     this.fees = fees;
     this.recipient = recipient;
@@ -28,7 +28,7 @@ export class Transaction {
    * @desc
    *  Create a Transaction object from a plain object.
    */
-  static fromDict(data: {
+  public static FromDict(data: {
     amount: number;
     fees: number;
     recipient: string;
@@ -41,21 +41,21 @@ export class Transaction {
    * @desc
    *  Create a Transaction object from a JSON string.
    */
-  static deserialize(jsonStr: string): Transaction {
+  public static Deserialize(jsonStr: string): Transaction {
     const data = JSON.parse(jsonStr) as {
       amount: number;
       fees: number;
       recipient: string;
       sender: string;
     };
-    return Transaction.fromDict(data);
+    return Transaction.FromDict(data);
   }
 
   /**
    * @desc
    *  Serialize the transaction to a plain object.
    */
-  toDict(): TransactionDict {
+  public ToDict(): TransactionDict {
     return {
       amount: this.amount,
       fees: this.fees,
@@ -68,24 +68,24 @@ export class Transaction {
    * @desc
    *  Serialize the transaction to a JSON string.
    */
-  serialize(): string {
-    return JSON.stringify(this.toDict());
+  public Serialize(): string {
+    return JSON.stringify(this.ToDict());
   }
 
   /**
    * @desc
    *  String representation of the transaction.
    */
-  toString(): string {
-    return this.serialize();
+  public ToString(): string {
+    return this.Serialize();
   }
 
   /**
    * @desc
    *  Get the hash of the transaction.
    */
-  getHash(): string {
-    const bytes = new TextEncoder().encode(this.serialize());
+  public GetHash(): string {
+    const bytes = new TextEncoder().encode(this.Serialize());
     const hashBytes = sha3_256(bytes) as Uint8Array;
     
     return Array.from(hashBytes)
