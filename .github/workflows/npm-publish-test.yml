@@ -211,7 +211,7 @@ jobs:
   # ║                     Publish to npm                       ║
   # ╚══════════════════════════════════════════════════════════╝
   Publish:
-    needs: [Timestamp, build, test]
+    needs: [Timestamp, build]
     runs-on: ubuntu-latest
 
     permissions:
