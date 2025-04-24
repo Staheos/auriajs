@@ -35,7 +35,8 @@
     "test": "echo \"Error: no test specified\" && exit 0",
     "prepare": "npm run build",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
-    "typecheck": "tsc --project tsconfig.json --noEmit"
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "coverage": "jest --coverage --coverageReporters=lcov"
   },
   "files": [
     "dist",

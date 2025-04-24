@@ -102,6 +102,7 @@ jobs:
       - name: Update package.json
         run: |
           npm pkg set version=${{ steps.semver.outputs.stable }}
+          npm pkg delete publishConfig.tag
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -am "chore: remove prerelease tag from version"
