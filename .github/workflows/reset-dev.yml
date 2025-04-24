@@ -68,6 +68,46 @@ jobs:
           persist-credentials: true
           fetch-depth: 0 
 
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            **/node_modules
+            package-lock.json
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Setup Node.js & Authenticate
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Read current version
+        id: read_version
+        run: |
+          version=$(npm pkg get version | tr -d '"')
+          echo "current=$version" >> $GITHUB_OUTPUT
+
+      - name: Compute stable version
+        id: semver
+        run: |
+          # Strip everything after the first hyphen
+          stable=${{ steps.read_version.outputs.current }}
+          stable=${stable%%-*}
+          echo "stable=$stable" >> $GITHUB_OUTPUT
+
+      - name: Update package.json
+        run: |
+          npm pkg set version=${{ steps.semver.outputs.stable }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -am "chore: remove prerelease tag from version"
+          git push origin master
+      
+
       - name: Force push master to dev
         run: |
           git fetch origin dev || git checkout -b dev
