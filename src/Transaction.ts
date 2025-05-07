@@ -69,7 +69,7 @@ export class Transaction {
    *  Serialize the transaction to a JSON string.
    */
   public Serialize(): string {
-    return JSON.stringify(this.ToDict());
+    return JSON.stringify(Transaction.prototype.ToDict.call(this));
   }
 
   /**
@@ -85,7 +85,7 @@ export class Transaction {
    *  Get the hash of the transaction.
    */
   public GetHash(): string {
-    const bytes = new TextEncoder().encode(this.Serialize());
+    const bytes = new TextEncoder().encode(Transaction.prototype.Serialize.call(this));
     const hashBytes = sha3_256(bytes) as Uint8Array;
     
     return Array.from(hashBytes)
