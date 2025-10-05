@@ -1,5 +1,4 @@
 import axios from 'axios';
-import * as https from "node:https";
 import { SignedTransaction } from './SignedTransaction.js';
 
 
@@ -9,12 +8,8 @@ const DEFAULT_API_ENDPOINT = axios.create({
 });
 
 const UNVERIFIED_API_ENDPOINT = axios.create({
-  baseURL: 'https://api.auria.dev:7190',
+  baseURL: 'http://api.auria.dev:7190',
   headers: { 'Content-Type': 'application/json' },
-  httpsAgent: new https.Agent({
-    rejectUnauthorized: false,
-    requestCert: false,
-  })
 });
 
 const LOCAL_API_ENDPOINT = axios.create({
@@ -23,12 +18,8 @@ const LOCAL_API_ENDPOINT = axios.create({
 });
 
 const LOCAL_UNVERIFIED_API_ENDPOINT = axios.create({
-  baseURL: 'https://localhost:7190',
+  baseURL: 'http://localhost:7190',
   headers: { 'Content-Type': 'application/json' },
-  httpsAgent: new https.Agent({
-    rejectUnauthorized: false,
-    requestCert: false,
-  })
 });
 
 /**
@@ -43,7 +34,6 @@ export function SelectAPIEndpoint(isLocal: boolean, isUnverified: boolean): void
     API_ENDPOINT = isUnverified ? UNVERIFIED_API_ENDPOINT : DEFAULT_API_ENDPOINT;
   }
 }
-
 
 /**
    * @desc
