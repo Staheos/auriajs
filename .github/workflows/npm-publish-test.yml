@@ -256,6 +256,7 @@ jobs:
         run: |
           NEW_VER=$(node -p "require('./package.json').version")
           echo "Stepped up to $NEW_VER"
+          npm version prerelease --no-git-tag-version
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add package.json
