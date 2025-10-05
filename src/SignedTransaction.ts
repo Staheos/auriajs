@@ -2,6 +2,7 @@ import { Wallet } from './Wallet.js';
 import { Transaction } from './Transaction.js';
 import { Signature } from './Signature.js';
 import { SignedTransactionDict } from './SignedTransactionDict.js';
+import { PublicKey } from "./PublicKey.js";
 
 /**
  * @desc
@@ -9,7 +10,7 @@ import { SignedTransactionDict } from './SignedTransactionDict.js';
  */
 export class SignedTransaction extends Transaction {
   private readonly _signature: Signature;
-  private readonly _publicKey: Uint8Array;
+  private readonly _publicKey: PublicKey;
 
   /**
    * @desc
@@ -31,7 +32,7 @@ export class SignedTransaction extends Transaction {
     return {
       transaction: super.ToDict(),
       hash: this.GetHash(),
-      pubkey: Buffer.from(this._publicKey).toString('hex'),
+      pubkey: this._publicKey.ToHex(),
       signature: this._signature.Serialize(),
     };
   }

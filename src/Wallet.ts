@@ -1,62 +1,53 @@
-import { ed448 } from '@noble/curves/ed448';     
-import { sha3_256 } from '@noble/hashes/sha3';   
+import { Address } from "./Address.js";
+import { PublicKey } from "./PublicKey.js";
+import { PrivateKey } from "./PrivateKey.js";
+
 
 export class Wallet {
-  private readonly privateKey: Uint8Array;
+  private readonly privateKey: PrivateKey;
 
-  private constructor(privateKey: Uint8Array) {
-    this.privateKey = privateKey;
+  private constructor(privKey: PrivateKey) {
+    this.privateKey = privKey;
   }
 
   /**
    * @desc
-   * Create a wallet from raw private key bytes. 
+   * Create a wallet from private key.
    */
-  public static FromPrivateKeyBytes(privateKeyBytes: Uint8Array): Wallet {
-    return new Wallet(privateKeyBytes);
-  }
-
-  /** 
-   * @desc 
-   * Create a wallet from a private key in hex string format. 
-   */
-  public static FromPrivateKeyHex(privateKeyHex: string): Wallet {
-    const privateKey = Uint8Array.from(Buffer.from(privateKeyHex, 'hex'));
-    return new Wallet(privateKey);
+  public static FromPrivateKey(privKey: PrivateKey): Wallet {
+    return new Wallet(privKey);
   }
 
   /** 
    * @desc
-   *  Generate a new ED448 private key. 
+   *  Generate a new wallet with unique keypair.
    */
   public static Generate(): Wallet {
-    const privKey = ed448.utils.randomPrivateKey();
+    const privKey = PrivateKey.Generate();
     return new Wallet(privKey);
   }
 
   /**
    * @desc
-   *  Get the raw private key bytes. 
+   *  Get the private key associated with this wallet.
    */
-  public GetPrivateKey(): Uint8Array {
+  public GetPrivateKey(): PrivateKey {
     return this.privateKey;
   }
 
   /**
    * @desc
-   *  Get the public key bytes for this wallet. 
+   *  Get the public key associated with this wallet.
    */
-  public GetPublicKey(): Uint8Array {
-    return ed448.getPublicKey(this.privateKey);
+  public GetPublicKey(): PublicKey {
+    return this.privateKey.GetPublicKey();
   }
 
   /**
    * @desc
    *  Compute the address (SHA3‑256 hash of the public key) in hex. 
    */
-  public GetAddress(): string {
-    const pub = this.GetPublicKey();
-    const hashBytes = sha3_256(pub);
-    return Buffer.from(hashBytes).toString('hex');
+  public GetAddress(): Address {
+    return this.privateKey.GetAddress();
   }
 }

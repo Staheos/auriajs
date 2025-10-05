@@ -1,4 +1,6 @@
 import { ed448 } from '@noble/curves/ed448';
+import { PrivateKey } from "./PrivateKey.js";
+import { PublicKey } from "./PublicKey.js";
 
 
 export class Signature {
@@ -12,8 +14,8 @@ export class Signature {
    * @desc
    *  Sign bytes using given private key.
    */
-  public static Sign(data: Uint8Array, privateKey: Uint8Array): Signature {
-    const sig = ed448.sign(data, privateKey);
+  public static Sign(data: Uint8Array, privateKey: PrivateKey): Signature {
+    const sig = ed448.sign(data, privateKey.GetBytes());
     return new Signature(sig);
   }
 
@@ -30,8 +32,8 @@ export class Signature {
    * @desc
    *  Verify signature against data and public key.
    */
-  public Verify(data: Uint8Array, publicKey: Uint8Array): boolean {
-    return ed448.verify(this.signature, data, publicKey);
+  public Verify(data: Uint8Array, publicKey: PublicKey): boolean {
+    return ed448.verify(this.signature, data, publicKey.GetBytes());
   }
 
   /**

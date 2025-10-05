@@ -1,3 +1,6 @@
+export * from './Address.js';
+export * from './PublicKey.js';
+export * from './PrivateKey.js';
 export * from './Wallet.js';
 export * from './Signature.js';
 export * from './TransactionDict.js';
