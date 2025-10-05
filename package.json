@@ -2,8 +2,7 @@
   "name": "@auria-system/auria-test",
   "version": "1.0.2-2",
   "publishConfig": {
-    "access": "public",
-    "tag": "prerelease"
+    "access": "public"
   },
   "description": "Bringing Auria API to JavaScript and TypeScript.",
   "author": "Staheos",
