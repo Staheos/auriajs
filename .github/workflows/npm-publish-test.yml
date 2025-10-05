@@ -95,8 +95,9 @@ jobs:
       - name: Run npm audit via Action
         uses: oke-py/npm-audit-action@v2
         with:
-          severity: moderate      # low, moderate, high, critical
-          registry-url: 'https://registry.npmjs.org'
+          audit_level: high      # low, moderate, high, critical
+          create_issues: false
+          create_pr_comments: false
 
 
   # ╔══════════════════════════════════════════════════════════╗
