@@ -6,7 +6,11 @@ import { PrivateKey } from "./PrivateKey.js";
 export class Wallet {
   private readonly privateKey: PrivateKey;
 
-  private constructor(privKey: PrivateKey) {
+  /**
+   * @desc
+   * Create a wallet from private key.
+   */
+  public constructor(privKey: PrivateKey) {
     this.privateKey = privKey;
   }
 

@@ -3,12 +3,12 @@ import { SignedTransaction } from './SignedTransaction.js';
 
 
 const DEFAULT_API_ENDPOINT = axios.create({
-  baseURL: 'https://api.auria.dev:7190',
+  baseURL: 'https://swipeu.dev:7190',
   headers: { 'Content-Type': 'application/json' },
 });
 
 const UNVERIFIED_API_ENDPOINT = axios.create({
-  baseURL: 'http://api.auria.dev:7190',
+  baseURL: 'http://swipeu.dev:7190',
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -46,12 +46,12 @@ export async function SubmitTransaction(tr: SignedTransaction): Promise<string> 
 
 /**
    * @desc
-   *  Fetch the balance for the given account address.
+   *  Fetch the balance for the given account address. Returns a number on success or an error string on failure.
    */
 export async function FetchBalance(accountAddress: string): Promise<number | string> {
   const response = await API_ENDPOINT.get<string>(`/balance/${accountAddress}`);
   const text = response.data;
-  if (!(response.status === 200)) {
+  if (!(response.status === 200) || parseInt(text, 10) === Number.NaN) {
     return text;
   }
   return parseInt(text, 10);
