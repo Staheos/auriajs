@@ -1,6 +1,6 @@
 {
   "name": "@auria-system/auria-test",
-  "version": "1.0.2-6",
+  "version": "1.0.2-7",
   "publishConfig": {
     "access": "public"
   },
