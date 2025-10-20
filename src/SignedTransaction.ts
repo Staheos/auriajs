@@ -32,7 +32,7 @@ export class SignedTransaction extends Transaction {
     return {
       transaction: super.ToDict(),
       hash: this.GetHash(),
-      pubkey: this._publicKey.ToHex(),
+      pubkey: this._publicKey.ToBase58(),
       signature: this._signature.Serialize(),
     };
   }
