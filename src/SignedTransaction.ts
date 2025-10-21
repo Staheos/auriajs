@@ -33,7 +33,7 @@ export class SignedTransaction extends Transaction {
       transaction: super.ToDict(),
       hash: this.GetHash(),
       pubkey: this._publicKey.ToBase58(),
-      signature: this._signature.Serialize(),
+      signature: this._signature.ToBase58(),
     };
   }
 

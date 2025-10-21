@@ -3,8 +3,9 @@ import { sha3_256 } from '@noble/hashes/sha3';
 import bs58 from 'bs58';
 import { Address } from './Address.js';
 import { PublicKey } from "./PublicKey.js";
+import { IBase58 } from "./interfaces/IBase58.js";
 
-export class PrivateKey {
+export class PrivateKey implements IBase58 {
   private readonly bytes: Uint8Array;
 
   private constructor(privKeyBytes: Uint8Array) {

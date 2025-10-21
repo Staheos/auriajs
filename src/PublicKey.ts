@@ -2,8 +2,9 @@ import { ed448 } from '@noble/curves/ed448';
 import { sha3_256 } from '@noble/hashes/sha3';
 import bs58 from 'bs58';
 import { Address } from './Address.js';
+import { IBase58 } from "./interfaces/IBase58.js";
 
-export class PublicKey {
+export class PublicKey implements IBase58 {
   private readonly bytes: Uint8Array;
 
   private constructor(pubKeyBytes: Uint8Array) {

@@ -1,9 +1,12 @@
 import { ed448 } from '@noble/curves/ed448';
 import { PrivateKey } from "./PrivateKey.js";
 import { PublicKey } from "./PublicKey.js";
+import { IBase58 } from "./interfaces/IBase58.js";
+import { IHex } from "./interfaces/IHex.js";
+import bs58 from "bs58";
 
 
-export class Signature {
+export class Signature implements IHex, IBase58 {
   private readonly signature: Uint8Array;
 
   private constructor(signature: Uint8Array) {
@@ -40,8 +43,16 @@ export class Signature {
    * @desc
    *  Serialize the signature to a hex string.
    */
-  public Serialize(): string {
+  public ToHex(): string {
     return Buffer.from(this.signature).toString('hex');
+  }
+
+  /**
+   * @desc
+   *  Serialize the signature to a hex string.
+   */
+  public ToBase58(): string {
+    return bs58.encode(this.signature);
   }
 
   /**
@@ -49,6 +60,6 @@ export class Signature {
    *  String representation of the signature.
    */
   public ToString(): string {
-    return this.Serialize();
+    return this.ToBase58();
   }
 }

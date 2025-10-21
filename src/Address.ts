@@ -1,11 +1,13 @@
 import bs58 from 'bs58';
+import { IHex } from "./interfaces/IHex.js";
+import { IBase58 } from "./interfaces/IBase58.js";
 
 
 /**
  * @desc
  * Class to handle account addresses.
  */
-export class Address {
+export class Address implements IHex, IBase58 {
   private readonly bytes: Uint8Array;
 
   private constructor(addressBytes: Uint8Array) {
