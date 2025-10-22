@@ -28,7 +28,7 @@ export class SignedTransaction extends Transaction {
    *  Create a Transaction object from a plain object.
    */
   public static FromDict(data: SignedTransactionType): SignedTransaction {
-    return new SignedTransaction(data.amount, data.fees, data.recipient, data.sender);
+    return new SignedTransaction(data.transaction, data.signature, data.pubkey);
   }
 
   /**
