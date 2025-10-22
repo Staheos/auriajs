@@ -1,6 +1,8 @@
 import { Address } from "./Address.js";
 import { PublicKey } from "./PublicKey.js";
 import { PrivateKey } from "./PrivateKey.js";
+import { Transaction } from "./Transaction.js";
+import { SignedTransaction } from "./SignedTransaction.js";
 
 
 export class Wallet {
@@ -53,5 +55,10 @@ export class Wallet {
    */
   public GetAddress(): Address {
     return this.privateKey.GetAddress();
+  }
+
+  public SignTransaction(tx: Transaction): SignedTransaction {
+    const signature = Signature.Sign(new TextEncoder().encode(tx.GetHash()), this.GetPrivateKey());
+    return SignedTransaction(tx, signature, this.GetPublicKey());
   }
 }

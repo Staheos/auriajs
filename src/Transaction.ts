@@ -28,12 +28,7 @@ export class Transaction {
    * @desc
    *  Create a Transaction object from a plain object.
    */
-  public static FromDict(data: {
-    amount: number;
-    fees: number;
-    recipient: string;
-    sender: string;
-  }): Transaction {
+  public static FromDict(data: TransactionType): Transaction {
     return new Transaction(data.amount, data.fees, data.recipient, data.sender);
   }
 

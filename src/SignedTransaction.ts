@@ -16,12 +16,19 @@ export class SignedTransaction extends Transaction {
    * @desc
    *  Create a signed transaction using the provided wallet.
    */
-  public constructor(transaction: Transaction, wallet: Wallet) {
+  public constructor(transaction: Transaction, signature: Signature, publicKey: PublicKey) {
     super(transaction.amount, transaction.fees, transaction.recipient, transaction.sender);
     // Sign the hash of the base transaction
-    const txHash = this.GetHash();
-    this._signature = Signature.Sign(new TextEncoder().encode(txHash), wallet.GetPrivateKey());
-    this._publicKey = wallet.GetPublicKey();
+    this._signature = signature
+    this._publicKey = publicKey
+  }
+
+  /**
+   * @desc
+   *  Create a Transaction object from a plain object.
+   */
+  public static FromDict(data: SignedTransactionType): SignedTransaction {
+    return new SignedTransaction(data.amount, data.fees, data.recipient, data.sender);
   }
 
   /**
