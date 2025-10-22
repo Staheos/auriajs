@@ -1,11 +1,11 @@
-import { TransactionDict } from "./TransactionDict.js";
+import { TransactionType } from "./TransactionType.js";
 
 /**
  * @desc
  *  A signed transaction dictionary interface that includes the transaction and signature details.
  */
-export interface SignedTransactionDict {
-    transaction: TransactionDict;
+export interface SignedTransactionType {
+    transaction: TransactionType;
     hash: string;
     pubkey: string;
     signature: string;

@@ -1,6 +1,6 @@
 import { sha3_256 } from '@noble/hashes/sha3';
 
-import { TransactionDict } from './TransactionDict.js';
+import { TransactionType } from './TransactionType.js';
 
 
 /**
@@ -55,7 +55,7 @@ export class Transaction {
    * @desc
    *  Serialize the transaction to a plain object.
    */
-  public ToDict(): TransactionDict {
+  public ToDict(): TransactionType {
     return {
       amount: this.amount,
       fees: this.fees,

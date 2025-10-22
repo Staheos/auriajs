@@ -46,8 +46,8 @@ export function SelectLocalAPIEndpoint(isUnverified: boolean, address: string): 
  *  Submit a signed transaction to the node via HTTP POST.
  */
 export async function SubmitTransaction(tr: SignedTransaction): Promise<string> {
-  const response = await API_ENDPOINT.post<string>('/st', tr.Serialize());
-  return response.data;
+  const res = await API_ENDPOINT.post<string>('/st', tr.Serialize());
+  return res.data;
 }
 
 /**
@@ -55,10 +55,23 @@ export async function SubmitTransaction(tr: SignedTransaction): Promise<string> 
  *  Fetch the balance for the given account address. Returns a number on success or an error string on failure.
  */
 export async function FetchBalance(accountAddress: string): Promise<number | string> {
-  const response = await API_ENDPOINT.get<string>(`/balance/${ accountAddress }`);
-  const text = response.data;
-  if (!(response.status === 200) || parseInt(text, 10) === Number.NaN) {
+  const res = await API_ENDPOINT.get<string>(`/balance/${ accountAddress }`);
+  const text = res.data;
+  if (!(res.status === 200) || parseInt(text, 10) === Number.NaN) {
     return text;
   }
   return parseInt(text, 10);
+}
+
+/**
+ * @desc
+ *  Fetch the transaction with the given hash. Returns an object on success or an error string on failure.
+ */
+export async function FetchTransaction(transactionHash: string): Promise<object | string> {
+  try {
+    const res = await API_ENDPOINT.get<string>(`/transaction/${ transactionHash }`);
+    return JSON.parse(res.data);
+  } catch (e) {
+      return (e as any)?.response?.data;
+  }
 }

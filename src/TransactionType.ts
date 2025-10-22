@@ -3,7 +3,7 @@
  * @desc
  * Transaction dictionary interface that includes the transaction details.
  */
-export interface TransactionDict {
+export interface TransactionType {
     amount?: number;
     fees?: number;
     recipient?: string;

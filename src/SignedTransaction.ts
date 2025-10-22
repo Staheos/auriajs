@@ -1,7 +1,7 @@
 import { Wallet } from './Wallet.js';
 import { Transaction } from './Transaction.js';
 import { Signature } from './Signature.js';
-import { SignedTransactionDict } from './SignedTransactionDict.js';
+import { SignedTransactionType } from './SignedTransactionType.js';
 import { PublicKey } from "./PublicKey.js";
 
 /**
@@ -28,7 +28,7 @@ export class SignedTransaction extends Transaction {
    * @desc
    *  Serialize the signed transaction to a plain object including signature and pubkey.
    */
-  public override ToDict(): SignedTransactionDict {
+  public override ToDict(): SignedTransactionType {
     return {
       transaction: super.ToDict(),
       hash: this.GetHash(),
