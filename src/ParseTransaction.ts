@@ -17,17 +17,17 @@ export function CheckSignedTransactionType(v: any): SignedTransactionType | unde
   if ("hash" in v && typeof v.fees !== "string") return undefined;
   if ("pubkey" in v && typeof v.recipient !== "string") return undefined;
   if ("signature" in v && typeof v.sender !== "string") return undefined;
-  return v as TransactionType;
+  return v as SignedTransactionType;
 }
 
 export function ParseTransaction(v: object): Transaction | SignedTransaction | undefined {
-  let tx = CheckTransactionType(v);
+  const tx = CheckTransactionType(v);
   if (tx) {
     return Transaction.FromDict(tx);
   }
-  tx = CheckSignedTransactionType(v);
-  if (tx) {
-    return SignedTransaction.FromDict(tx);
+  const stx = CheckSignedTransactionType(v);
+  if (stx) {
+    return SignedTransaction.FromDict(stx);
   }
   return undefined;
 }
