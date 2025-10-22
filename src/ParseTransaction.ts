@@ -4,7 +4,7 @@ import { Transaction } from "./Transaction.js";
 import { SignedTransaction } from "./SignedTransaction.js";
 
 
-export function CheckTransactionType(v: object): TransactionType | undefined {
+export function CheckTransactionType(v: any): TransactionType | undefined {
   if ("amount" in v && typeof v.amount !== "number") return undefined;
   if ("fees" in v && typeof v.fees !== "number") return undefined;
   if ("recipient" in v && typeof v.recipient !== "string") return undefined;
@@ -12,7 +12,7 @@ export function CheckTransactionType(v: object): TransactionType | undefined {
   return v as TransactionType;
 }
 
-export function CheckSignedTransactionType(v: object): SignedTransactionType | undefined {
+export function CheckSignedTransactionType(v: any): SignedTransactionType | undefined {
   if ("transaction" in v && typeof v.amount !== "object") return undefined;
   if ("hash" in v && typeof v.fees !== "string") return undefined;
   if ("pubkey" in v && typeof v.recipient !== "string") return undefined;
