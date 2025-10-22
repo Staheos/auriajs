@@ -26,8 +26,17 @@ export class Signature implements IHex, IBase58 {
    * @desc
    *  Deserialize a hex string to a Signature object.
    */
-  public static Deserialize(signatureHex: string): Signature {
+  public static FromHex(signatureHex: string): Signature {
     const sigBytes = Uint8Array.from(Buffer.from(signatureHex, 'hex'));
+    return new Signature(sigBytes);
+  }
+
+  /**
+   * @desc
+   *  Deserialize a Base58 string to a Signature object.
+   */
+  public static FromBase58(signatureBs58: string): Signature {
+    const sigBytes = bs58.decode(signatureBs58);
     return new Signature(sigBytes);
   }
 

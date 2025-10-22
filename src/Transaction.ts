@@ -28,7 +28,8 @@ export class Transaction {
    * @desc
    *  Create a Transaction object from a plain object.
    */
-  public static FromDict(data: TransactionType): Transaction {
+  public static FromDict(data2: object): Transaction {
+    const data = data2 as TransactionType;
     return new Transaction(data.amount, data.fees, data.recipient, data.sender);
   }
 
@@ -50,7 +51,7 @@ export class Transaction {
    * @desc
    *  Serialize the transaction to a plain object.
    */
-  public ToDict(): TransactionType {
+  public ToDict(): object {
     return {
       amount: this.amount,
       fees: this.fees,

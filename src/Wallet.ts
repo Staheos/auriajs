@@ -3,6 +3,7 @@ import { PublicKey } from "./PublicKey.js";
 import { PrivateKey } from "./PrivateKey.js";
 import { Transaction } from "./Transaction.js";
 import { SignedTransaction } from "./SignedTransaction.js";
+import { Signature } from "./Signature.js";
 
 
 export class Wallet {
@@ -59,6 +60,6 @@ export class Wallet {
 
   public SignTransaction(tx: Transaction): SignedTransaction {
     const signature = Signature.Sign(new TextEncoder().encode(tx.GetHash()), this.GetPrivateKey());
-    return SignedTransaction(tx, signature, this.GetPublicKey());
+    return new SignedTransaction(tx, signature, this.GetPublicKey());
   }
 }

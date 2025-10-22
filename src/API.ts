@@ -73,7 +73,7 @@ export async function FetchTransaction(transactionHash: string): Promise<Transac
   try {
     const res = await API_ENDPOINT.get(`/transaction/${ transactionHash }`);
     const tx = ParseTransaction(res.data as object);
-    return tx;
+    return tx as Transaction | SignedTransaction;
   } catch (e) {
       return (e as any)?.response?.data;
   }
