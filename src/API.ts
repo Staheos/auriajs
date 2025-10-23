@@ -2,6 +2,7 @@ import axios from 'axios';
 import { SignedTransaction } from './SignedTransaction.js';
 import { Transaction } from "./Transaction.js";
 import { ParseTransaction } from "./ParseTransaction.js";
+import { Address } from "./Address.js";
 
 
 const DEFAULT_API_ENDPOINT = axios.create({
@@ -74,6 +75,20 @@ export async function FetchTransaction(transactionHash: string): Promise<Transac
     const res = await API_ENDPOINT.get(`/transaction/${ transactionHash }`);
     const tx = ParseTransaction(res.data as object);
     return tx as Transaction | SignedTransaction;
+  } catch (e) {
+      return (e as any)?.response?.data;
+  }
+}
+
+/**
+ * @desc
+ *  Fetch the transaction with the given hash. Returns an object on success or an error string on failure.
+ */
+export async function FetchTransactionForAccount(address: Address): Promise<(Transaction | SignedTransaction)[]> {
+  try {
+    const res = await API_ENDPOINT.get(`/transactions-account/${ address.ToBase58() }`);
+    const txs = (res.data as object[]).map(v => ParseTransaction(v)) as (Transaction | SignedTransaction)[];
+    return txs;
   } catch (e) {
       return (e as any)?.response?.data;
   }
