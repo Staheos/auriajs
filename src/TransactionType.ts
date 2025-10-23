@@ -8,5 +8,7 @@ export interface TransactionType {
     fees: number;
     recipient: string;
     sender: string;
+    timestamp: number;
+    timestamp_valid: number;
     [key: string]: any;
 }

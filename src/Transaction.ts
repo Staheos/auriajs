@@ -12,16 +12,25 @@ export class Transaction {
   fees: number;
   recipient: string;
   sender: string;
+  timestamp: number;
+  timestampValid: number;
 
   /**
    * @desc
    *  Initialize a new Transaction.
    */
-  public constructor(amount: number, fees: number, recipient: string, sender: string) {
+  public constructor(amount: number, fees: number, recipient: string, sender: string, timestamp?: number, timestampValid?: number) {
     this.amount = amount;
     this.fees = fees;
     this.recipient = recipient;
     this.sender = sender;
+    if (timestamp && timestampValid) {
+      this.timestamp = timestamp;
+      this.timestampValid = timestampValid;
+    } else {
+      this.timestamp = Date.now();
+      this.timestampValid = this.timestamp + 30 * 1000;
+    }
   }
 
   /**
@@ -30,7 +39,7 @@ export class Transaction {
    */
   public static FromDict(data2: object): Transaction {
     const data = data2 as TransactionType;
-    return new Transaction(data.amount, data.fees, data.recipient, data.sender);
+    return new Transaction(data.amount, data.fees, data.recipient, data.sender, data.timestamp, data.timestamp_valid);
   }
 
   /**
@@ -83,7 +92,7 @@ export class Transaction {
   public GetHash(): string {
     const bytes = new TextEncoder().encode(Transaction.prototype.Serialize.call(this));
     const hashBytes = sha3_256(bytes) as Uint8Array;
-    
+
     return Array.from(hashBytes)
       .map((b: number) => b.toString(16).padStart(2, '0'))
       .join('');

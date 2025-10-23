@@ -16,7 +16,7 @@ export class SignedTransaction extends Transaction {
    *  Create a signed transaction using the provided wallet.
    */
   public constructor(transaction: Transaction, signature: Signature, publicKey: PublicKey) {
-    super(transaction.amount, transaction.fees, transaction.recipient, transaction.sender);
+    super(transaction.amount, transaction.fees, transaction.recipient, transaction.sender, transaction.timestamp, transaction.timestamp);
     // Sign the hash of the base transaction
     this._signature = signature
     this._publicKey = publicKey
