@@ -5,13 +5,13 @@ import { SignedTransaction } from "./SignedTransaction.js";
 
 
 export function CheckTransactionType(v: any): TransactionType | undefined {
-  if (!"amount" in v || typeof v.amount !== "number")
+  if (! ("amount" in v) || typeof v.amount !== "number")
         return undefined;
-    if (!"fees" in v || typeof v.fees !== "number")
+    if (! ("fees" in v) || typeof v.fees !== "number")
         return undefined;
-    if (!"recipient" in v || typeof v.recipient !== "string")
+    if (! ("recipient" in v) || typeof v.recipient !== "string")
         return undefined;
-    if (!"sender" in v || typeof v.sender !== "string")
+    if (! ("sender" in v) || typeof v.sender !== "string")
         return undefined;
     return v as TransactionType;
 }
