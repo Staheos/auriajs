@@ -11,6 +11,10 @@ export class Hash implements IHex, IBase58 {
     this.hash = hash;
   }
 
+  public bytes(): Uint8Array {
+    return this.hash;
+  }
+
   /**
    * @desc
    *  Deserialize a hex string to a hash object.

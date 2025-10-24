@@ -1,13 +1,15 @@
 import { sha3_256 } from '@noble/hashes/sha3';
 
 import { TransactionType } from './TransactionType.js';
+import { Hash } from "./Hash.js";
+import { IHashable } from "./interfaces/IHashable.js";
 
 
 /**
  * @desc
  *  A simple transaction model with serialization, deserialization, and hashing.
  */
-export class Transaction {
+export class Transaction implements IHashable {
   amount: number;
   fees: number;
   recipient: string;
@@ -79,22 +81,14 @@ export class Transaction {
 
   /**
    * @desc
-   *  String representation of the transaction.
-   */
-  public ToString(): string {
-    return this.Serialize();
-  }
-
-  /**
-   * @desc
    *  Get the hash of the transaction.
    */
-  public GetHash(): string {
+  public GetHash(): Hash {
     const bytes = new TextEncoder().encode(Transaction.prototype.Serialize.call(this));
     const hashBytes = sha3_256(bytes) as Uint8Array;
 
-    return Array.from(hashBytes)
+    return Hash.FromHex(Array.from(hashBytes)
       .map((b: number) => b.toString(16).padStart(2, '0'))
-      .join('');
+      .join(''));
   }
 }

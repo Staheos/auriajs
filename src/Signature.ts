@@ -58,17 +58,9 @@ export class Signature implements IHex, IBase58 {
 
   /**
    * @desc
-   *  Serialize the signature to a hex string.
+   *  Serialize the signature to a Base58 string.
    */
   public ToBase58(): string {
     return bs58.encode(this.signature);
-  }
-
-  /**
-   * @desc
-   *  String representation of the signature.
-   */
-  public ToString(): string {
-    return this.ToBase58();
   }
 }

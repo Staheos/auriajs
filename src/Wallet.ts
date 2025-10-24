@@ -59,7 +59,7 @@ export class Wallet {
   }
 
   public SignTransaction(tx: Transaction): SignedTransaction {
-    const signature = Signature.Sign(new TextEncoder().encode(tx.GetHash()), this.GetPrivateKey());
+    const signature = Signature.Sign(tx.GetHash().bytes(), this.GetPrivateKey());
     return new SignedTransaction(tx, signature, this.GetPublicKey());
   }
 }

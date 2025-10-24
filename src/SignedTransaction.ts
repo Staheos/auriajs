@@ -38,7 +38,7 @@ export class SignedTransaction extends Transaction {
   public override ToDict(): object {
     return {
       transaction: super.ToDict(),
-      hash: this.GetHash(),
+      hash: this.GetHash().toString(),
       pubkey: this._publicKey.ToBase58(),
       signature: this._signature.ToBase58(),
     };
