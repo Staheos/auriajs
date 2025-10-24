@@ -13,6 +13,10 @@ export function CheckTransactionType(v: any): TransactionType | undefined {
         return undefined;
     if (! ("sender" in v) || typeof v.sender !== "string")
         return undefined;
+    if (! ("timestamp" in v) || typeof v.timestamp !== "number")
+        return undefined;
+    if (! ("timestamp_valid" in v) || typeof v.timestamp_valid !== "number")
+        return undefined;
     return v as TransactionType;
 }
 

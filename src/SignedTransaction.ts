@@ -16,7 +16,7 @@ export class SignedTransaction extends Transaction {
    *  Create a signed transaction using the provided wallet.
    */
   public constructor(transaction: Transaction, signature: Signature, publicKey: PublicKey) {
-    super(transaction.amount, transaction.fees, transaction.recipient, transaction.sender, transaction.timestamp, transaction.timestamp);
+    super(transaction.amount, transaction.fees, transaction.recipient, transaction.sender, transaction.timestamp, transaction.timestampValid);
     // Sign the hash of the base transaction
     this._signature = signature
     this._publicKey = publicKey
@@ -38,7 +38,7 @@ export class SignedTransaction extends Transaction {
   public override ToDict(): object {
     return {
       transaction: super.ToDict(),
-      hash: this.GetHash().toString(),
+      hash: this.GetHash().ToBase58(),
       pubkey: this._publicKey.ToBase58(),
       signature: this._signature.ToBase58(),
     };
