@@ -68,6 +68,8 @@ export class Transaction implements IHashable {
       fees: this.fees,
       recipient: this.recipient,
       sender: this.sender,
+      timestamp: this.timestamp,
+      timestamp_valid: this.timestampValid,
     };
   }
 
